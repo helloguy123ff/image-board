@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Board</title>
+  < style>body {
+    font-family: Arial, sans-serif;
+}
+
+#upload {
+    margin-bottom: 20px;
+}
+
+#posts {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.post {
+    width: 200px;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+.post img {
+    width: 100%;
+    height: auto;
+}
+</style>
+</head>
+<body>
+    <h1>Image Board</h1>
+    
+    <div id="upload">
+        <input type="file" id="fileInput" accept="image/*">
+        <button onclick="uploadImage()">Upload</button>
+    </div>
+
+    <div id="posts"></div>
+
+    <script>
+      let postId = 0;
+
+function uploadImage() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(event) {
+            const imageUrl = event.target.result;
+            createPost(imageUrl);
+        };
+    }
+}
+
+function createPost(imageUrl) {
+    const postsContainer = document.getElementById('posts');
+    const postDiv = document.createElement('div');
+    postDiv.classList.add('post');
+    postDiv.innerHTML = `
+        <img src="${imageUrl}" alt="Uploaded Image">
+        <textarea placeholder="Add a comment..." id="comment_${postId}"></textarea>
+        <button onclick="addComment(${postId})">Add Comment</button>
+        <ul id="comments_${postId}"></ul>
+    `;
+    postsContainer.appendChild(postDiv);
+    postId++;
+}
+
+function addComment(postId) {
+    const commentTextArea = document.getElementById(`comment_${postId}`);
+    const commentText = commentTextArea.value;
+    if (commentText.trim() !== '') {
+        const commentsList = document.getElementById(`comments_${postId}`);
+        const commentListItem = document.createElement('li');
+        commentListItem.textContent = commentText;
+        commentsList.appendChild(commentListItem);
+        commentTextArea.value = '';
+    }
+}
+
+    </script>
+</body>
+</html>
